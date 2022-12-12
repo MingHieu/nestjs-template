@@ -1,4 +1,4 @@
-import { ForbiddenException, HttpStatus, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
@@ -23,11 +23,12 @@ export class AuthService {
           password: hashPassword,
         },
       });
-      delete user.password;
-      return {
-        statusCode: HttpStatus.CREATED,
-        message: 'Success',
-      };
+      const userWithToken = await this.prisma.user.update({
+        where: { username: user.username },
+        data: { token: this.signToken(user.id) },
+      });
+      delete userWithToken.password;
+      return userWithToken;
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code == 'P2002') {
