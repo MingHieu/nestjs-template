@@ -1,21 +1,22 @@
 datasource db {
-    provider = "postgresql"
-    url      = env("DB_URL")
+    provider   = "postgresql"
+    url        = env("DB_URL")
+    extensions = [citext]
 }
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["postgresqlExtensions"]
+    binaryTargets   = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 model User {
     id       Int      @id @default(autoincrement())
-    createAt DateTime @default(now())
-    updateAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-    username String @unique
+    username String @unique @db.Citext
     password String
 
     name String?
-    
-    token String?
 }

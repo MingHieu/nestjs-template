@@ -1,2 +1,3 @@
-export * from './auth.dto';
-export * from './IJwtPayload';
+export * from './jwt-payload.dto';
+export * from './login.dto';
+export * from './register.dto';

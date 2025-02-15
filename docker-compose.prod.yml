@@ -1,0 +1,30 @@
+services:
+  server:
+    image: project-name-server
+    env_file:
+      - .env.prod
+    ports:
+      - '3000'
+    depends_on:
+      - database
+    command: sh -c "yarn prisma:prod:migrate && yarn prisma:prod:seed && yarn start:prod"
+    networks:
+      - project-name
+
+  database:
+    image: postgres
+    restart: always
+    env_file:
+      - .env.prod
+    ports:
+      - '5432'
+    networks:
+      - project-name
+    volumes:
+      - project-name:/var/lib/postgresql/data
+
+networks:
+  project-name:
+
+volumes:
+  project-name:
